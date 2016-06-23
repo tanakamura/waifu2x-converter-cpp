@@ -24,12 +24,18 @@
 namespace w2xc {
 
 class Model {
+public:
+	enum convolve_class {
+		SPATIAL_CONVOLUTION = 0,
+		SPATIAL_FULL_CONVOLUTION = 1
+	};
 
 private:
 	int nInputPlanes;
 	int nOutputPlanes;
 	std::vector<W2Mat> weights;
 	std::vector<double> biases;
+	enum convolve_class convolveClass;
 	int kernelSize;
 
 	Model() {
@@ -67,8 +73,27 @@ public:
 			std::cerr << "Error : Model-Constructor : \n"
 					"kernel in model is not square.\n"
 					"stop." << std::endl;
-			std::exit(-1);
+			std::exit(1);
 		} // kH == kW
+
+		picojson::object::iterator i = jsonObj.find("class_name");
+		if (i == jsonObj.end()) {
+			this->convolveClass = SPATIAL_CONVOLUTION;
+		} else {
+			std::string convolveClass = i->second.get<std::string>();
+			std::cerr << convolveClass << std::endl;
+
+			if (convolveClass == "nn.SpatialConvolutionMM") {
+				this->convolveClass = SPATIAL_CONVOLUTION;
+			} else if (convolveClass == "nn.SpatialFullConvolution") {
+				this->convolveClass = SPATIAL_FULL_CONVOLUTION;
+			} else {
+				std::cerr << "Error : Unknown class name : "
+					  << convolveClass
+					  << std::endl;
+				std::exit(1);
+			}
+		}
 
 		biases = std::vector<double>(nOutputPlanes, 0.0);
 
@@ -96,6 +121,7 @@ public:
 	// getter function
 	int getNInputPlanes();
 	int getNOutputPlanes();
+	convolve_class getConvolveClass();
 
 	std::vector<W2Mat> &getWeigts() {
 		return weights;

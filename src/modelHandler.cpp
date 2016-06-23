@@ -27,6 +27,11 @@ int Model::getNOutputPlanes() {
 	return nOutputPlanes;
 }
 
+Model::convolve_class Model::getConvolveClass() {
+	return convolveClass;
+}
+
+
 bool
 Model::filter_CV(ComputeEnv *env,
 		 Buffer *packed_input_buf,
@@ -796,23 +801,33 @@ modelUtility& modelUtility::getInstance(){
 
 Model::Model(FILE *binfp)
 {
-	uint32_t nInputPlanes, nOutputPlanes;
+	uint32_t nInputPlanes, nOutputPlanes, cc;
 
 	fread(&nInputPlanes, 4, 1, binfp);
 	fread(&nOutputPlanes, 4, 1, binfp);
+	fread(&cc, 4, 1, binfp);
 
 	this->nInputPlanes = nInputPlanes;
 	this->nOutputPlanes = nOutputPlanes;
 	this->kernelSize = 3;
+	this->convolveClass = (enum convolve_class) cc;
 	this->weights.clear();
 	this->biases.clear();
+
+	int w=3;
+	int h=3;
+
+	if (cc == SPATIAL_FULL_CONVOLUTION) {
+		w=4;
+		h=4;
+	}
 
 	// setting weight matrices
 	for (uint32_t oi=0; oi<nOutputPlanes; oi++) {
 		for (uint32_t ii=0; ii<nInputPlanes; ii++) {
 			W2Mat writeMatrix(kernelSize, kernelSize, CV_32FC1);
-			for (int yi=0; yi<3; yi++) {
-				for (int xi=0; xi<3; xi++) {
+			for (int yi=0; yi<h; yi++) {
+				for (int xi=0; xi<w; xi++) {
 					double v;
 					fread(&v, 8, 1, binfp);
 					writeMatrix.at<float>(yi, xi) = v;
@@ -923,36 +938,34 @@ bool modelUtility::generateModelFromJSON(const std::string &fileName,
 			for (auto&& m : models) {
 				uint32_t nInputPlanes = m->getNInputPlanes();
 				uint32_t nOutputPlanes = m->getNOutputPlanes();
+				uint32_t cc = (uint32_t)m->getConvolveClass();
 
 				fwrite(&nInputPlanes, 4, 1, binfp);
 				fwrite(&nOutputPlanes, 4, 1, binfp);
+				fwrite(&cc, 4, 1, binfp);
 
 				std::vector<W2Mat> &weights = m->getWeigts();
 
 				int nw = weights.size();
+				assert(nw == nInputPlanes*nOutputPlanes);
+
 				for (int wi=0; wi<nw; wi++) {
 					W2Mat &wm = weights[wi];
-					double v;
-					v = wm.at<float>(0,0);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(0,1);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(0,2);
-					fwrite(&v, 1, 8, binfp);
+					int w=3;
+					int h=3;
 
-					v = wm.at<float>(1,0);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(1,1);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(1,2);
-					fwrite(&v, 1, 8, binfp);
+					if (cc == Model::convolve_class::SPATIAL_FULL_CONVOLUTION) {
+						w = 4;
+						h = 4;
+					}
 
-					v = wm.at<float>(2,0);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(2,1);
-					fwrite(&v, 1, 8, binfp);
-					v = wm.at<float>(2,2);
-					fwrite(&v, 1, 8, binfp);
+					for (int yi=0; yi<h; yi++) {
+						for (int xi=0; xi<w; xi++) {
+							double v;
+							v = wm.at<float>(yi,xi);
+							fwrite(&v, 1, 8, binfp);
+						}
+					}
 				}
 
 				std::vector<double> &b = m->getBiases();
