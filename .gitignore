@@ -32,9 +32,12 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 libw2xc.so
+libw2xc.dylib
 modelHandler_OpenCL.cl.h
+modelHandler_sse.bc
 runbench
 runtest
 *.isa
 *.il
 .gdbinit
+.DS_Store

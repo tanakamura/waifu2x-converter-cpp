@@ -197,14 +197,24 @@ update_test(const char *dst_path,
 
 	struct stat src_st;
 	stat(src_path, &src_st);
-
-	if (src_st.st_mtim.tv_sec > dst_st.st_mtim.tv_sec) {
+    
+#if (defined __APPLE__)
+	if (src_st.st_mtime > dst_st.st_mtime) {
 		return true;
 	}
 
-	if (src_st.st_mtim.tv_nsec > dst_st.st_mtim.tv_nsec) {
+	if (src_st.st_mtime > dst_st.st_mtime) {
 		return true;
 	}
+#else
+    if (src_st.st_mtim.tv_sec > dst_st.st_mtim.tv_sec) {
+        return true;
+    }
+    
+    if (src_st.st_mtim.tv_sec > dst_st.st_mtiv.tv_sec) {
+        return true;
+    }
+#endif
 
 	return false;
 #endif
