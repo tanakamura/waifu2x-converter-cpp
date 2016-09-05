@@ -211,7 +211,7 @@ update_test(const char *dst_path,
         return true;
     }
     
-    if (src_st.st_mtim.tv_sec > dst_st.st_mtiv.tv_sec) {
+    if (src_st.st_mtim.tv_nsec > dst_st.st_mtim.tv_nsec) {
         return true;
     }
 #endif
