@@ -197,6 +197,11 @@ update_test(const char *dst_path,
 
 	struct stat src_st;
 	stat(src_path, &src_st);
+	
+#if (defined __APPLE__)
+#pragma push_macro("st_mtim")
+#define st_mtim st_mtimespec
+#endif
 
 	if (src_st.st_mtim.tv_sec > dst_st.st_mtim.tv_sec) {
 		return true;
@@ -205,6 +210,10 @@ update_test(const char *dst_path,
 	if (src_st.st_mtim.tv_nsec > dst_st.st_mtim.tv_nsec) {
 		return true;
 	}
+
+#if (defined __APPLE__)
+#pragma pop_macro("st_mtim")
+#endif
 
 	return false;
 #endif
