@@ -843,7 +843,7 @@ namespace w2xc
 		if (err != CL_SUCCESS)
 		{
 			printf("enqueue ndrange error : %d\n", err);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		err = clWaitForEvents(1, &event);
@@ -851,13 +851,13 @@ namespace w2xc
 		if (err != CL_SUCCESS)
 		{
 			printf("wait ndrange error : %d\n", err);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		if (err != CL_SUCCESS)
 		{
 			printf("read buffer error : %d\n", err);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		clReleaseMemObject(cl_fbiases);

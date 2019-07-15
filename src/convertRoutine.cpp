@@ -132,7 +132,7 @@ namespace w2xc
 
 			if (!models[index]->filter(conv, env, packed_input_buf, packed_output_buf, filterSize))
 			{
-				std::exit(-1);
+				exit(EXIT_FAILURE);
 			}
 			
 			double t1 = getsec();

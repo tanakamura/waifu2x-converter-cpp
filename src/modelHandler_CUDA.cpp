@@ -390,7 +390,7 @@ namespace w2xc
 		if (r != CUDA_SUCCESS)
 		{
 			printf("fail: alloc bias %d.", (int)r);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		r = cuMemcpyHtoDAsync(d_fbiases, biases, bias_size, dev->stream);
@@ -398,7 +398,7 @@ namespace w2xc
 		if (r != CUDA_SUCCESS)
 		{
 			puts("fail: copy to bias");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		CUdeviceptr d_weight = 0;
@@ -408,7 +408,7 @@ namespace w2xc
 		if (r != CUDA_SUCCESS)
 		{
 			puts("fail: alloc weight");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		r = cuMemcpyHtoDAsync(d_weight, weight, weight_size, dev->stream);
@@ -416,7 +416,7 @@ namespace w2xc
 		if (r != CUDA_SUCCESS)
 		{
 			puts("fail: copy to weight");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		size_t nOutputPlanes2 = nOutputPlanes;
@@ -474,7 +474,7 @@ namespace w2xc
 					if (r != CUDA_SUCCESS)
 					{
 						puts("fail: launch");
-						exit(1);
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
@@ -656,14 +656,14 @@ namespace w2xc
 		if (r != CUDA_SUCCESS)
 		{
 			puts("fail: launch");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		r = cuStreamSynchronize(dev->stream);
 		if (r != CUDA_SUCCESS)
 		{
 			printf("fail stream sync: %d\n", r);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		cuMemFree(d_weight);

@@ -706,14 +706,14 @@ namespace w2xc
 
 					if (error_count >= 256)
 					{
-						exit(1);
+						exit(EXIT_FAILURE);
 					}
 				}
 			}
 
 			if (error_count != 0)
 			{
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 
 			delete packed_output_cv_buf;

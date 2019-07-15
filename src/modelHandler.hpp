@@ -91,7 +91,7 @@ namespace w2xc
 					std::cerr <<
 						"Error : Model-Constructor : \nkernel in model is not square.\nstop." <<
 						std::endl;
-					std::exit(-1);
+					exit(EXIT_FAILURE);
 				} // kH == kW
 
 				biases = std::vector<double>(nOutputPlanes, 0.0);
@@ -101,7 +101,7 @@ namespace w2xc
 					std::cerr <<
 						"Error : Model-Constructor : \nsomething error has been occured in loading model from JSON-Object.\nstop." <<
 						std::endl;
-					std::exit(-1);
+					exit(EXIT_FAILURE);
 				}
 			}
 			Model(FILE *binfp);

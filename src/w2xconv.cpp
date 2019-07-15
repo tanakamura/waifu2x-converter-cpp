@@ -802,7 +802,7 @@ static void apply_scale
 		))
 		{
 			std::cerr << "w2xc::convertWithModels : something error has occured.\nstop." << std::endl;
-			std::exit(1);
+			exit(EXIT_FAILURE);
 		}
 
 		output_2.to_cvmat(output);

@@ -737,36 +737,36 @@ int main(int argc, char** argv)
 	{
 		std::cerr << e.what() << std::endl;
 		std::cerr << "Error : cmd.parse() threw exception" << std::endl;
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	
 	//Check scale-ratio is vaild.
 	if (cmdScaleRatio.getValue() < 0 || cmdScaleRatio.getValue() > 1024)
 	{
 		std::cout << "Error: Scale Ratio range is 0-1024" << std::endl;
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	
 	//Check Quality/Compression option ranges.
 	if (cmdPngCompression.getValue() < 0 || cmdPngCompression.getValue() > 9)
 	{
 		std::cout << "Error: PNG Compression level range is 0-9, 9 being the slowest and resulting in the smallest file size." << std::endl;
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	if (cmdImgQuality.getValue() < -1 || cmdImgQuality.getValue() > 101)
 	{
 		std::cout << "Error: JPEG & WebP Compression quality range is 0-101! (0 being smallest size and lowest quality), use 101 for lossless WebP" << std::endl;
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	if (cmdLogLevel.getValue() < 0 || cmdLogLevel.getValue() > 4)
 	{
 		std::cout << "Error: Log-level has to be within range (0-4), 4 being the noisiest." << std::endl;
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	if (validate_format_extension(cmdOutputFormat.getValue()) == false)
 	{
 		printf("Unsupported output extension: %s\nUse option --list-supported-formats to see a list of supported formats", cmdOutputFormat.getValue().c_str());
-		std::exit(-1);
+		exit(EXIT_FAILURE);
 	}
 	
 	//We need to do this conversion because using a TCLAP::ValueArg<fs::path> can not handle spaces.
