@@ -1039,6 +1039,14 @@ int main(int argc, char** argv)
 	}
 
 	w2xconv_fini(converter);
+	
+	if (numFilesProcessed == numErrors)
+	{
+		//Possibly log an error here?
+		//printf("All requested files errored.")
+		exit(EXIT_FAILURE);
+	}
+	
 
 #if defined(_WIN32) && defined(_UNICODE)
 	free(argv);
