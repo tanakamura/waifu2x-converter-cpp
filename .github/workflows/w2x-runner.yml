@@ -71,7 +71,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: llvm-dep
-      run: brew install llvm
+      run: brew install llvm@8
     - name: opencv-dep
       run: brew install opencv
     - name: run-cmake
