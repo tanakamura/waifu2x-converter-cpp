@@ -77,6 +77,8 @@ if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "^(Apple)?Clang$")
 	set(CMAKE_SHARED_LINKER_FLAGS "-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib")
 	if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
 		set(FILE_SYSTEM_LIB "c++fs")
+	else()
+		set(FILE_SYSTEM_LIB "stdc++fs")
 	endif()
 elseif(UNIX OR MINGW)
 # https://gitlab.kitware.com/cmake/cmake/issues/17834
